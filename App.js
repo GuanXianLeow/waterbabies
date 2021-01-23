@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
 
-import { View, Text } from 'react-native'
+import { View, Text,LogBox } from 'react-native'
 
 import * as firebase from 'firebase'
 
@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware} from 'redux'
 import rootReducer from './redux/reducers'
 import thunk from 'redux-thunk'
+LogBox.ignoreLogs(['setting a timer']);
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
 const firebaseConfig = {
@@ -30,8 +31,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import LandingScreen from './components/auth/Landing'
 import RegisterScreen from './components/auth/Register'
+import LoginScreen from './components/auth/Login'
 import MainScreen from './components/Main'
 import AddScreen from './components/main/Add'
+import SaveScreen from './components/main/Save'
 
 const Stack = createStackNavigator();
 
@@ -70,18 +73,18 @@ export class App extends Component {
       )
     }
 
-    if(!loggedIn) {
-    return (
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Landing">
-          <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
-       
+    if (!loggedIn) {
+      return (
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Landing">
+            <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
       );
-  }
+    }
+
 
   return(
     <Provider store= {store}>
@@ -89,7 +92,8 @@ export class App extends Component {
 
       <Stack.Navigator initialRouteName="Main">
         <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="Add" component={AddScreen} />
+        <Stack.Screen name="Add" component={AddScreen} navigation={this.props.navigation} />
+        <Stack.Screen name="Save" component={SaveScreen} navigation={this.props.navigation} />
       </Stack.Navigator>
       </NavigationContainer>
 
